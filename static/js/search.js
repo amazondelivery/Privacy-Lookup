@@ -10,12 +10,13 @@ let error = 0;
 
 document.getElementById("thebutton").addEventListener('click', async () => {
     const domain = document.getElementById('search-input').value;
-    const response = await fetch(`/api/guide/${encodeURIComponent(domain)}`);
+    const response = await fetch(`/api/guides/${encodeURIComponent(domain)}`);
     const data = await response.json();
     
     if (data.exists) {
         window.location.href = `/guides/${encodeURIComponent(domain)}`;
     } else {
         document.getElementById('results').innerHTML = `No guide found for this website. error no ${error}`;
+        error++;
     }
 });

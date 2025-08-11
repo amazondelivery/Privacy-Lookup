@@ -24,31 +24,34 @@ templates = Jinja2Templates(directory="templates")
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-@app.get("/api/guide/{domain}")
+@app.get("/api/guides/{domain}")
 async def check_guide_exists(domain: str):
-    domain = sanitize_domain(domain)
-    guide_path = Path(f"guides/{domain}/{domain}.txt")
+    clean_domain = sanitize_domain(domain)
+    guide_path = Path(f"guides/{clean_domain}/{clean_domain}.txt")
 
     if guide_path.exists() and guide_path.is_file():
-        return {"exists": True, "url": f"/guide/{domain}"}
+        return {"exists": True, "url": f"/guides/{clean_domain}"}
     else:
         return {"exists": False}
 
-@app.get("/guide/{domain}", response_class=HTMLResponse)
+@app.get("/guides/{domain}", response_class=HTMLResponse)
 async def get_guide(request: Request, domain: str):
-    domain = sanitize_domain(domain)
-    guide_path = Path(f"guides/{domain}/{domain}.txt")  # Fixed path
+    clean_domain = sanitize_domain(domain)
+    guide_path = Path(f"guides/{clean_domain}/{clean_domain}.txt")
 
     if guide_path.exists() and guide_path.is_file():
-        with open(guide_path, 'r', encoding="utf-8") as file:
-            guide_content = file.read()
-        parsed_guide = parse_guide_text(guide_content)
+        try:
+            with open(guide_path, 'r', encoding="utf-8") as file:
+                guide_content = file.read()
+            parsed_guide = parse_guide_text(guide_content, clean_domain)
 
-        return templates.TemplateResponse("guide.html", {
-            "request": request,
-            "domain": domain,
-            "guide": parsed_guide
-        })
+            return templates.TemplateResponse("guide.html", {
+                "request": request,
+                "domain": clean_domain,
+                "guide": parsed_guide
+            })
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error reading guide: {str(e)}")
     else:
         raise HTTPException(status_code=404, detail="Guide not found")
 
@@ -58,7 +61,7 @@ def sanitize_domain(domain: str) -> str:
     domain = re.sub(r'^www\.', '', domain)
     domain = domain.rstrip('/')
 
-    # Prevent path traversal attempts
+    # Prevent path traverl attempts
     if '/' in domain or '\\' in domain:
         raise HTTPException(status_code=400, detail="Invalid domain format")
     
@@ -67,7 +70,7 @@ def sanitize_domain(domain: str) -> str:
     
     return domain
 
-def parse_guide_text(content: str) -> dict:
+def parse_guide_text(content: str, domain: str = "") -> dict:
     """Parse structured text file into guide data"""
     lines = content.strip().split('\n')
     

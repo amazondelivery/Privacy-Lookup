@@ -49,9 +49,13 @@ def setup_security(app: FastAPI):
     app.add_middleware(
         TrustedHostMiddleware,
         allowed_hosts=[
-            "your-app-name.onrender.com",  # Replace with your actual Render URL
+            "privacy-lookup.onrender.com",
             "*.onrender.com",
-            "localhost"
+            "localhost",
+            "127.0.0.1",
+            "0.0.0.0:8000",
+            "localhost:8000",
+            "127.0.0.1:8000"
         ]
     )
 
