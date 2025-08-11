@@ -6,7 +6,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 import time
 from collections import defaultdict
 
-#prevents DDoS
+# prevents DDoS
 class RateLimitMiddleware(BaseHTTPMiddleware):
     def __init__(self, app, calls: int = 100, period: int = 60):
         super().__init__(app)
