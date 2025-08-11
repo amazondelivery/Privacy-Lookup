@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ guide.title }} - DataGuard</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <nav>
+        <a href="/">&larr; Back to Search</a>
+    </nav>
+    
+    <div class="guide-container">
+        <div class="service-header">
+            <h1>{{ guide.title }}</h1>
+            {% if guide.last_updated %}
+            <p class="last-updated">Last updated: {{ guide.last_updated }}</p>
+            {% endif %}
+        </div>
+
+        <div class="guide-content">
+            {% if guide.desktop_steps %}
+            <section class="desktop-guide">
+                <h2>🖥️ Desktop Instructions</h2>
+                <ol>
+                    {% for step in guide.desktop_steps %}
+                    <li>
+                        <p>{{ step.instruction }}</p>
+                        {% if step.image %}
+                        <img src="{{ step.image }}" alt="Step {{ loop.index }}" class="guide-image">
+                        {% endif %}
+                        {% if step.note %}
+                        <p class="step-note"><strong>Note:</strong> {{ step.note }}</p>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ol>
+            </section>
+            {% endif %}
+
+            {% if guide.mobile_steps %}
+            <section class="mobile-guide">
+                <h2>📱 Mobile Instructions</h2>
+                <ol>
+                    {% for step in guide.mobile_steps %}
+                    <li>
+                        <p>{{ step.instruction }}</p>
+                        {% if step.image %}
+                        <img src="{{ step.image }}" alt="Step {{ loop.index }}" class="guide-image">
+                        {% endif %}
+                        {% if step.note %}
+                        <p class="step-note"><strong>Note:</strong> {{ step.note }}</p>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ol>
+            </section>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

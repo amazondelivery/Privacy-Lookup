@@ -1,0 +1,14 @@
+TITLE: Facebook Privacy Settings
+UPDATED: December 2023
+
+DESKTOP:
+STEP: Click the down arrow in the top right corner
+STEP: Select "Settings & Privacy" then "Settings"
+STEP: Click "Privacy" in the left sidebar
+STEP: Adjust "Who can see your future posts"
+
+MOBILE:
+STEP: Tap the hamburger menu (three lines)
+STEP: Scroll down and tap "Settings & Privacy"
+STEP: Tap "Settings"
+STEP: Tap "Privacy Settings"
