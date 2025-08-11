@@ -15,7 +15,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         self.clients = defaultdict(list)
     
     async def dispatch(self, request:Request, call_next):
-        client_ip = request.client_host
+        client_ip = request.client.host
         now = time.time()
 
         self.clients[client_ip] = [
