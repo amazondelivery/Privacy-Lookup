@@ -24,40 +24,44 @@ templates = Jinja2Templates(directory="templates")
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
+@app.get("/api/guide/{domain}")
+async def check_guide_exists(domain: str):
+    domain = sanitize_domain(domain)
+    guide_path = Path(f"guides/{domain}/{domain}.txt")
+
+    if guide_path.exists() and guide_path.is_file():
+        return {"exists": True, "url": f"/guide/{domain}"}
+    else:
+        return {"exists": False}
+
 @app.get("/guide/{domain}", response_class=HTMLResponse)
 async def get_guide(request: Request, domain: str):
     domain = sanitize_domain(domain)
-    guide_path = Path(f"guides/{domain}.txt")
+    guide_path = Path(f"guides/{domain}/{domain}.txt")  # Fixed path
 
-    if (guide_path.exists() and guide_path.is_file()):
+    if guide_path.exists() and guide_path.is_file():
         with open(guide_path, 'r', encoding="utf-8") as file:
             guide_content = file.read()
         parsed_guide = parse_guide_text(guide_content)
 
         return templates.TemplateResponse("guide.html", {
-            "request" : request,
-            "domain" : domain,
-            "guide" : parsed_guide
+            "request": request,
+            "domain": domain,
+            "guide": parsed_guide
         })
     else:
         raise HTTPException(status_code=404, detail="Guide not found")
-    
-@app.get("/api/guide/{domain}")
-async def check_guide_exists(domain: str):
-    domain = sanitize_domain(domain)
-    guide_path = Path(f"guides/{domain}.txt")
 
-    if guide_path.exists():
-        return {"exists" : True, "url":  f"/guide/{domain}"}
-    else:
-        return {"exists" : False}
-    
 def sanitize_domain(domain: str) -> str:
     domain = domain.lower().strip()
     domain = re.sub(r'^https?://', '', domain)
     domain = re.sub(r'^www\.', '', domain)
     domain = domain.rstrip('/')
 
+    # Prevent path traversal attempts
+    if '/' in domain or '\\' in domain:
+        raise HTTPException(status_code=400, detail="Invalid domain format")
+    
     if not re.match(r'^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', domain):
         raise HTTPException(status_code=400, detail="Invalid domain format")
     

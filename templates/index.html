@@ -4,18 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy Lookup</title>
+    <link rel="stylesheet" href="../static/css/styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Privacy Lookup</h1>
-        <p>Find privacy settings for any website</p>
+        <h1 id="title">Privacy Lookup</h1>
+        <p id="subheader">Find privacy settings for any website</p>
         
         <div class="search-container">
-            <input type="text" id="search-input" placeholder="Enter website (e.g., instagram.com)">
+            <input type="text" id="search-input" placeholder="Enter website">
             <button>Search</button>
         </div>
         
         <div id="results"></div>
     </div>
+    <script src="../static/js/search.js"></script> 
 </body>
 </html>
