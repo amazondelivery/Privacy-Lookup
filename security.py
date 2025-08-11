@@ -37,7 +37,10 @@ def setup_security(app: FastAPI):
     #CORS
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["https://google.com"],
+        allow_origins=[
+            "https://your-app-name.onrender.com",  # Your Render URL
+            "http://localhost:8000"  # For local development
+        ],
         allow_credentials=False,
         allow_methods=["GET"],
         allow_headers=["*"]
@@ -45,7 +48,11 @@ def setup_security(app: FastAPI):
 
     app.add_middleware(
         TrustedHostMiddleware,
-        allowed_hosts=["google.com", "*.google.com", "localhost"]
+        allowed_hosts=[
+            "your-app-name.onrender.com",  # Replace with your actual Render URL
+            "*.onrender.com",
+            "localhost"
+        ]
     )
 
     @app.middleware("http")
